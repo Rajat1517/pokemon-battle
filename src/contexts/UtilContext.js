@@ -7,7 +7,7 @@ export const UtilProvider = ({ children }) => {
   const [experience, setExperience] = useState(null);
   const [pokemon, setPokemon] = useState("pikachu");
   const [character, setCharacter] = useState("ash");
-  const [moves, setMoves] = useState(null);
+  const [moves, setMoves] = useState(["Iron-tail","Thunderbolt","Quick-Attack","Body-Slam"]);
   return (
     <UtilContext.Provider
       value={{
