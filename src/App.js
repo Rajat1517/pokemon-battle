@@ -15,11 +15,11 @@ function App() {
       element: <Configure/>
     }
   ]);
+
   return (
     <UtilProvider>
       <RouterProvider router={router}>
         <div className="App">
-          <Configure />
         </div>
       </RouterProvider>
     </UtilProvider>

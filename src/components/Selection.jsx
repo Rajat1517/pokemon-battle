@@ -1,17 +1,23 @@
-import React, { useState } from "react";
-
-function Selection({ selectables, text }) {
+import React, { useState,useContext } from "react";
+import { UtilContext } from "../contexts/UtilContext";
+function Selection({ selectables, text, setItem }) {
   const [active, setActive] = useState(0);
+  const {experience}= useContext(UtilContext);
+
   const len = selectables.length;
   const next = () => {
     setActive((prev) => {
-      return (prev + 1 + len) % len;
+      let newIndex= (prev + 1 + len) % len;
+      setItem(selectables[newIndex])
+      return newIndex;
     });
   };
 
   const previous = () => {
     setActive((prev) => {
-      return (prev - 1 + len) % len;
+      let newIndex=(prev - 1 + len) % len;
+      setItem(selectables[newIndex])
+      return newIndex;
     });
   };
 
@@ -24,7 +30,7 @@ function Selection({ selectables, text }) {
         !
       </p>
       <div className="row">
-        <button className="navigation" onClick={previous}>
+        <button disabled={experience} className="navigation" onClick={previous}>
           ‹
         </button>
         <div>
@@ -46,7 +52,6 @@ function Selection({ selectables, text }) {
           >
             <img
               id="current-image"
-              height={300}
               src={require(`../assets/${selectables[active]}.jpg`)}
               alt={selectables[active]}
             />
@@ -60,7 +65,7 @@ function Selection({ selectables, text }) {
             alt={selectables[(active + 1 + len) % len]}
           />
         </div>
-        <button className="navigation" onClick={next}>
+        <button disabled={experience} className="navigation" onClick={next}>
           ›
         </button>
       </div>

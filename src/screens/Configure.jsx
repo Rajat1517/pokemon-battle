@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "../App.css";
 import Selection from "../components/Selection";
+import { UtilContext } from "../contexts/UtilContext";
+import Moves from "../components/Moves";
 
 function Configure() {
   const [generatingExp, setGeneratingExp] = useState(false);
-  const [experience, setExperience] = useState(null);
+  const { experience, setExperience, setPokemon, setCharacter } =
+    useContext(UtilContext);
 
   const generateExperience = () => {
     setGeneratingExp(true);
@@ -16,11 +19,31 @@ function Configure() {
   };
 
   return (
-    <div style={{ width: "100%",textAlign:"center", height: "fit-content", backgroundColor:"rgba(200,200,200,1)" }}>
-      <Selection selectables={["ash","misty","may","brock"]} text="I will be "/>
-      <br /><br />
-      <Selection selectables={["pikachu","charmander","squirtle","bulbasaur"]} text="I choose you, "/>
-      <br /><br />
+    <div
+      style={{
+        width: "100%",
+        textAlign: "center",
+        height: "fit-content",
+        minHeight:"100vh",
+        padding:"2% 0",
+        backgroundColor: "rgba(200,200,200,1)",
+        boxSizing: "content-box",
+      }}
+    >
+      <div style={{}}>
+        <Selection
+          selectables={["ash", "misty", "may", "brock"]}
+          text="I will be "
+          setItem={setCharacter}
+        />
+      </div>
+      <div>
+        <Selection
+          selectables={["pikachu", "charmander", "squirtle", "bulbasaur"]}
+          text="I choose you, "
+          setItem={setPokemon}
+        />
+      </div>
       <div className={"path " + (generatingExp ? "" : "hidden")}>
         <img
           className="knob"
@@ -29,8 +52,15 @@ function Configure() {
           alt="knob"
         />
       </div>
-      <button disabled={experience} onClick={generateExperience}>Experience</button>
-      {experience && <p style={{margin:"0"}}>Exp: {experience}</p>}
+      <button disabled={experience} onClick={generateExperience}>
+        Experience
+      </button>
+      {experience && <p style={{ margin: "0" }}>Experience : {experience}</p>}
+      {experience && (
+        <div style={{ padding:"0 35%",textAlign:"center"}}>
+          <Moves />
+        </div>
+      )}
     </div>
   );
 }
