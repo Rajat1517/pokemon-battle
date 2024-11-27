@@ -1,45 +1,68 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { UtilContext } from "../contexts/UtilContext";
-import { io } from "socket.io-client";
+import socket from "../utilities/socketConnection";
+
 
 function Battle() {
   const { pokemon, character, moves } = useContext(UtilContext);
   const [health1, setHealth1] = useState(100);
   const [health2, setHealth2] = useState(100);
-
-  const socket = io("http://localhost:5000/");
+  const [text,setText]= useState("Let the battle begin!");
 
   useEffect(() => {
-    console.log("on");
     socket.on("attackForClient", (attack) => {
-      const { player, delta } = attack;
-      // console.log("Listened Attack result", player,delta);
-
+      const { player, delta, message } = attack;
+      setText(()=>{
+        return `Player ${player^3}${message}!`;
+      })
       decreaseHealth(player, delta);
     });
 
     return () => {
-      console.log("off");
       socket.off("attackForClient");
     };
-  }, []);
+  }, [health1,health2]);
 
   const attack = () => {
-    console.log("Emitting attack");
-    socket.emit("attackForServer", "i am attacking");
+
+    const attackDetails={
+      attack:{
+        type: "electric",
+        level: 3,
+      },
+      attackerDetails:{
+        pokemon:{
+          type: "fighting",
+          intensity: {
+            attack: 3,
+            defense: 2,
+          }
+        },
+        exp: 62,
+        strength: health1,
+      },
+      defenderDetails:{
+        pokemon:{
+          type: "fire",
+          intensity: {
+            attack: 2,
+            defense: 3,
+          }
+        },
+        exp: 57,
+        strength: health2,
+      }
+    }
+    socket.emit("attackForServer", attackDetails);
   };
 
   const decreaseHealth = (player=1, delta=20) => {
-      // delta = parseInt(window.prompt("Enter the change"));
-      console.log("Listened Attack result", player,delta);
-      // player = parseInt(window.prompt("Enter player"));
     delta = Math.min(player === 1 ? health1 : health2, delta);
     const p = document.getElementById(player === 1 ? "player1" : "player2");
     let id = null,
       x = 0,
       time = ~~(500 / delta);
     clearInterval(id);
-    // p.style.width=`${(player === 1 ? health1 : health2) - delta}%`;
     id = setInterval(() => {
       let width = p.style.width;
       width = width.slice(0, -1);
@@ -49,11 +72,10 @@ function Battle() {
         p.style.backgroundColor = "orange";
       }
       if (x === delta + 1) {
-        // player === 1
-        //   ? setHealth1((prev) => prev - delta)
-        //   : setHealth2((prev) => prev - delta);
+        player === 1
+          ? setHealth1((prev) => prev - delta)
+          : setHealth2((prev) => prev - delta);
         clearInterval(id);
-        console.log("done");
       } else {
         p.style.width = `${(player === 1 ? health1 : health2) - x}%`;
         x++;
@@ -141,7 +163,7 @@ function Battle() {
               width: "100%",
             }}
           >
-            <button className="attack" onClick={decreaseHealth}>
+            <button className="attack" onClick={attack}>
               {moves[0]}
             </button>
             <button className="attack" onClick={attack}>
@@ -159,7 +181,7 @@ function Battle() {
         </div>
       </div>
 
-      <div id="message-container">Let the battle begin!</div>
+      <div id="message-container">{text}</div>
     </div>
   );
 }
