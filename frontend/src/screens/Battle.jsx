@@ -157,30 +157,27 @@ function Battle() {
             </div>
           </div>
         </div>
+        {
+        moves !== undefined &&   
         <div>
-          <div
-            style={{
-              width: "100%",
-            }}
-          >
+          <div>
             <button className="attack" onClick={attack}>
-              {moves[0]}
+              {moves[0].move}
             </button>
             <button className="attack" onClick={attack}>
-              {moves[1]}
+              {moves[1].move}
             </button>
           </div>
           <div>
             <button className="attack" onClick={attack}>
-              {moves[2]}
+              {moves[2].move}
             </button>
             <button className="attack" onClick={attack}>
-              {moves[3]}
+              {moves[3].move}
             </button>
           </div>
-        </div>
+        </div>}
       </div>
-
       <div id="message-container">{text}</div>
     </div>
   );

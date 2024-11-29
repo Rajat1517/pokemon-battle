@@ -1,11 +1,14 @@
 import React, { useContext, useState } from "react";
 import { MOVES } from "../constants/pokemon";
 import { UtilContext } from "../contexts/UtilContext";
+import { useNavigate } from "react-router-dom";
 
 function Moves() {
   const { pokemon } = useContext(UtilContext);
   const [attacks,setAttacks]= useState(new Set());
   const {setMoves}=  useContext(UtilContext);
+  const navigate= useNavigate();
+
   function handleSubmit(e){
     e.preventDefault();
     if(attacks.size<4){
@@ -23,7 +26,8 @@ function Moves() {
         })
       });
       setMoves(temp);
-      window.alert("Battle begins!");
+
+      navigate("/battle",{replace: true});
     }
   }
 

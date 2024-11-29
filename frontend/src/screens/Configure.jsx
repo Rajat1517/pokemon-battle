@@ -9,6 +9,7 @@ function Configure() {
   const { experience, setExperience, setPokemon, setCharacter } =
     useContext(UtilContext);
 
+
   const generateExperience = () => {
     setGeneratingExp(true);
     setTimeout(() => {
@@ -24,8 +25,8 @@ function Configure() {
         width: "100%",
         textAlign: "center",
         height: "fit-content",
-        minHeight:"100vh",
-        padding:"2% 0",
+        minHeight: "100vh",
+        padding: "2% 0",
         backgroundColor: "rgba(200,200,200,1)",
         boxSizing: "content-box",
       }}
@@ -57,10 +58,11 @@ function Configure() {
       </button>
       {experience && <p style={{ margin: "0" }}>Experience : {experience}</p>}
       {experience && (
-        <div style={{ padding:"0 35%",textAlign:"center"}}>
-          <Moves />
+        <div style={{ padding: "0 35%", textAlign: "center" }}>
+          <Moves/>
         </div>
       )}
+      {/* <button onClick={()=>navigate("/battle")}>go</button> */}
     </div>
   );
 }
