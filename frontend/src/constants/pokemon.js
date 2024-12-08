@@ -1,39 +1,34 @@
-
-
-
-export const MOVES= {
-    "pikachu":[
-       "Mega-Punch", // fighting
-        "Thunderbolt", // electric
-        "Quick-Attack", // ground
-        "Iron-Tail", // fighting
-        "Wild-Charge", // electric
-        "Takedown" // ground
-    ],
-    "bulbasaur": [
-        "Razor-leaf", // grass
-        "Solar-Beam", // grass
-        "Vine-Whip", // grass
-        "Tackle", // ground
-        "Bind", // fighting
-        "Mud-Slap" // ground
-    ],
-    "charmander": [
-        "Emmber", // fire
-        "Flamethrower", // fire
-        "Scratch", // fighting
-        "Dragon-Rage", // Fire
-        "Skull-Bash", // fighting
-        "Seismic-Toss" // fighting
-    ],
-    "squirtle": [
-        "Blizzard", // water
-        "Mist", // ice
-        "Body-Slam", // fighting
-        "Hydro-pump", // water
-        "Bubble", // water
-        "Ice-Beam" // ice
-    ],
-}
-
-
+export const MOVES = {
+  pikachu: [
+    { name: "Mega-Punch", type: "fighting" },
+    { name: "Thunderbolt", type: "electric" },
+    { name: "Quick-Attack", type: "ground" },
+    { name: "Wild-Charge", type: "electric" },
+    { name: "Iron-Tail", type: "fighting" },
+    { name: "Takedown", type: "ground" },
+  ],
+  bulbasaur: [
+    { name: "Razor-leaf", type: "grass" },
+    { name: "Solar-Beam", type: "grass" },
+    { name: "Vine-Whip", type: "grass" },
+    { name: "Tackle", type: "ground" },
+    { name: "Mud-Slap", type: "ground" },
+    { name: "Bind", type: "fighting" },
+  ],
+  charmander: [
+    { name: "Scratch", type: "fighting" },
+    { name: "Emmber", type: "fire" },
+    { name: "Skull-Bash", type: "fighting" },
+    { name: "Flamethrower", type: "fire" },
+    { name: "Seismic-Toss", type: "fighting" },
+    { name: "Dragon-Rage", type: "fire" },
+  ],
+  squirtle: [
+    { name: "Mist", type: "ice" },
+    { name: "Blizzard", type: "water" },
+    { name: "Body-Slam", type: "fighting" },
+    { name: "Bubble", type: "water" },
+    { name: "Hydro-pump", type: "water" },
+    { name: "Ice-Beam", type: "ice" },
+  ],
+};

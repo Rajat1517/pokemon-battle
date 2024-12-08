@@ -1,30 +1,46 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { UtilContext } from "../contexts/UtilContext";
 import socket from "../utilities/socketConnection";
 
 
 function Battle() {
-  const { pokemon, character, moves } = useContext(UtilContext);
+  const { pokemon, character, moves,room } = useContext(UtilContext);
   const [health1, setHealth1] = useState(100);
   const [health2, setHealth2] = useState(100);
   const [text,setText]= useState("Let the battle begin!");
 
+  const [player1,setPlayer1]= useState(null);
+  const [player2,setPlayer2]= useState(null);
+
   useEffect(() => {
-    socket.on("attackForClient", (attack) => {
-      const { player, delta, message } = attack;
-      setText(()=>{
-        return `Player ${player^3}${message}!`;
-      })
-      decreaseHealth(player, delta);
+
+    socket.emit("joined battle",{
+      room_id:room,
     });
 
+    socket.on("players in room",({players})=>{
+      console.log(players, socket.id);
+      const p1= players?.find(player=>player.id===socket.id);
+      const p2= players?.find(player=>player.id!==socket.id);
+      setPlayer1(p1);
+      setPlayer2(p2);
+      console.log(p1,p2);
+    })
+    
+    // socket.on("attackForClient", (attack) => {
+    //   const { player, delta, message } = attack;
+    //   setText(()=>{
+    //     return `Player ${player^3}${message}!`;
+    //   })
+    //   decreaseHealth(player, delta);
+    // });
+
     return () => {
-      socket.off("attackForClient");
+      // socket.off("attackForClient");
     };
-  }, [health1,health2]);
+  }, []);
 
   const attack = () => {
-
     const attackDetails={
       attack:{
         type: "electric",
@@ -53,6 +69,7 @@ function Battle() {
         strength: health2,
       }
     }
+
     socket.emit("attackForServer", attackDetails);
   };
 
@@ -97,27 +114,27 @@ function Battle() {
         }}
       >
         <div className="row" style={{ height: "100%", margin: "0 3%" }}>
-          <div className="player">
+          { player1 && <div className="player">
             <div>
               <div className="health-bar">
                 <div id="player1"></div>
               </div>
-              <p>HP {health1}</p>
+              <p>HP {player1.health}</p>
             </div>
             <div>
               <img
                 height={300}
-                src={require(`../assets/${character}.jpg`)}
-                alt={character}
+                src={require(`../assets/${player1?.avatar}.jpg`)}
+                alt={player1?.avatar}
               />
               <img
                 height={150}
-                src={require(`../assets/${pokemon}.jpg`)}
-                alt={pokemon}
+                src={require(`../assets/${player1?.pokemon.name}.jpg`)}
+                alt={player1?.pokemon.name}
               />
             </div>
-          </div>
-          <div className="player">
+          </div>}
+          { player2 && <div className="player">
             <div
               style={{
                 width: "100%",
@@ -135,45 +152,45 @@ function Battle() {
               >
                 <div id="player2"></div>
               </div>
-              <p>HP {health2}</p>
+              <p>HP {player2.health}</p>
             </div>
             <div>
               <img
                 height={150}
-                src={require(`../assets/${pokemon}.jpg`)}
-                alt={pokemon}
+                src={require(`../assets/${player2.pokemon.name}.jpg`)}
+                alt={player2.pokemon.name}
                 style={{
                   transform: "rotateY(180deg)",
                 }}
               />
               <img
                 height={300}
-                src={require(`../assets/${character}.jpg`)}
-                alt={character}
+                src={require(`../assets/${player2.avatar}.jpg`)}
+                alt={player2.avatar}
                 style={{
                   transform: "rotateY(180deg)",
                 }}
               />
             </div>
-          </div>
+          </div>}
         </div>
         {
-        moves !== undefined &&   
+        player1 &&   
         <div>
           <div>
             <button className="attack" onClick={attack}>
-              {moves[0].move}
+              {player1?.pokemon.moves[0].name}
             </button>
             <button className="attack" onClick={attack}>
-              {moves[1].move}
+              {player1?.pokemon.moves[1].name}
             </button>
           </div>
           <div>
             <button className="attack" onClick={attack}>
-              {moves[2].move}
+              {player1?.pokemon.moves[2].name}
             </button>
             <button className="attack" onClick={attack}>
-              {moves[3].move}
+              {player1?.pokemon.moves[3].name}
             </button>
           </div>
         </div>}

@@ -6,7 +6,7 @@ import Moves from "../components/Moves";
 
 function Configure() {
   const [generatingExp, setGeneratingExp] = useState(false);
-  const { experience, setExperience, setPokemon, setCharacter } =
+  const { experience, setExperience, setPokemon, setCharacter, room } =
     useContext(UtilContext);
 
 
@@ -31,7 +31,8 @@ function Configure() {
         boxSizing: "content-box",
       }}
     >
-      <div style={{}}>
+      <h3>Room: {room}</h3>
+      <div>
         <Selection
           selectables={["ash", "misty", "may", "brock"]}
           text="I will be "
@@ -62,7 +63,6 @@ function Configure() {
           <Moves/>
         </div>
       )}
-      {/* <button onClick={()=>navigate("/battle")}>go</button> */}
     </div>
   );
 }

@@ -5,8 +5,9 @@ export const UtilContext = createContext();
 export const UtilProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [experience, setExperience] = useState(null);
-  const [pokemon, setPokemon] = useState("squirtle");
-  const [character, setCharacter] = useState("misty");
+  const [pokemon, setPokemon] = useState("pikachu");
+  const [character, setCharacter] = useState("ash");
+  const [room, setRoom] = useState("");
   const [moves, setMoves] = useState([
     {
       move: "Iron-tail",
@@ -23,8 +24,9 @@ export const UtilProvider = ({ children }) => {
     {
       move: "Body-Slam",
       level: 3,
-    } 
+    },
   ]);
+
   return (
     <UtilContext.Provider
       value={{
@@ -38,6 +40,8 @@ export const UtilProvider = ({ children }) => {
         setCharacter,
         moves,
         setMoves,
+        room,
+        setRoom,
       }}
     >
       {children}
