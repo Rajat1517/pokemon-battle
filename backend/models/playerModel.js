@@ -8,7 +8,7 @@ class Player {
   }
 
   updateHealth(delta) {
-    this.health += delta;
+    this.health = Math.max(this.health-delta,0);
     return this.health;
   }
 }

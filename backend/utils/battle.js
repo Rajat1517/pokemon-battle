@@ -1,3 +1,6 @@
+const { players } = require("../services/configureService");
+const { rooms } = require("../services/roomService");
+
 const typeChart = [
   [0.5, 0.5, 1, 1, 2, 2, 0.5],
   [1, 0.5, 1, 1, 2, , 0.5, 2],
@@ -8,8 +11,34 @@ const typeChart = [
   [2, 1, 1, 1, 1, 2, 0.5],
 ];
 
-const indices = new Map();
+const pokemons = {
+  pikachu: {
+    type: "electric",
+    intensity: {
+      attack: 4,
+      defense: 1,
+    },
+  },
+  charmander: {
+    type: "fire",
+    intensity: { attack: 4, defense: 1 },
+  },
+  squirtle: {
+    type: "water",
+    intensity: { attack: 2, defense: 3 },
+  },
+  bulbasaur: {
+    type: "grass",
+    intensity: {
+      attack: 3,
+      defense: 2,
+    },
+  },
+};
 
+
+
+const indices = new Map();
 indices.set("ice", 0);
 indices.set("water", 1);
 indices.set("fighting", 2);
@@ -18,11 +47,13 @@ indices.set("ground", 4);
 indices.set("grass", 5);
 indices.set("fire", 6);
 
-const calcAttack = (attacker, exp, strength, attack, defenderType) => {
-  const attackerType = attacker.type;
+const calcAttack = ({attacker, exp, strength}, attack, defender) => {
+  // console.log(attacker, exp, strength, attack, defender);
+  const defenderType= pokemons[defender].type;
+  const attackerType = pokemons[attacker.name].type;
   const attackType = attack.type;
   const attackLevel = attack.level;
-  const intensity = attacker.intensity?.attack / 5;
+  const intensity = pokemons[attacker.name].intensity?.attack / 5;
   const c1 = typeChart[indices.get(attackType)][indices.get(defenderType)];
   const c2 = typeChart[indices.get(attackerType)][indices.get(defenderType)];
 
@@ -35,10 +66,12 @@ const calcAttack = (attacker, exp, strength, attack, defenderType) => {
   return res;
 };
 
-const calcDefend = (defender, exp, strength, attack, attackerType) => {
-  const defenderType = defender.type;
+const calcDefend = ({defender, exp, strength}, attack,attacker) => {
+  // console.log(defender, exp, strength, attack,attacker);
+  const attackerType= pokemons[attacker].type;
+  const defenderType = pokemons[defender.name].type;
   const attackType = attack.type;
-  const intensity = defender.intensity?.defense / 5;
+  const intensity = pokemons[defender.name].intensity?.defense / 5;
   const c1 = typeChart[indices.get(attackType)][indices.get(defenderType)];
   const c2 = typeChart[indices.get(attackerType)][indices.get(defenderType)];
 
@@ -48,12 +81,28 @@ const calcDefend = (defender, exp, strength, attack, attackerType) => {
   return res;
 };
 
- const battleBlow = ({attackerDetails, attack, defenderDetails}) => {
+ const battleBlow = (player,move,room_id) => {
 
-    const {pokemon: attacker,exp: exp1, strength: strength1 }= attackerDetails;
-    const {pokemon: defender,exp: exp2, strength: strength2 }= defenderDetails;
+    const attackerDetails= players.get(player);
+    const defenderId= rooms.get(room_id)?.players.filter(p=>p!==player)[0];
+    const defenderDetails= players.get(defenderId);
+    const attack= move;
+    const attackerData={
+      attacker: attackerDetails.pokemon,
+      exp: attackerDetails.experience,
+      strength: attackerDetails.health,
+    }
+    const defenderData={
+      defender: defenderDetails.pokemon,
+      exp: defenderDetails.experience,
+      strength: defenderDetails.health,
+    }
 
-  return Math.max(0, calcAttack(attacker, exp1,strength1,attack,defender.type) - calcDefend(defender, exp2,strength2,attack,attacker.type));
+
+  const delta= Math.max(0, calcAttack(attackerData,attack,defenderData.defender.name) - calcDefend(defenderData,attack,attackerData.attacker.name));
+  
+  players.get(defenderId).updateHealth(delta);
+  return delta;
 };
 
 

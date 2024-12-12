@@ -26,54 +26,18 @@ function Battle() {
       setPlayer2(p2);
       console.log(p1,p2);
     })
-    
-    // socket.on("attackForClient", (attack) => {
-    //   const { player, delta, message } = attack;
-    //   setText(()=>{
-    //     return `Player ${player^3}${message}!`;
-    //   })
-    //   decreaseHealth(player, delta);
-    // });
 
+    socket.on("pokemon move",({player,delta})=>{
+      console.log(player,delta);
+      decreaseHealth(player===socket.id?1:2,delta);
+    })
+    
     return () => {
-      // socket.off("attackForClient");
+  
     };
   }, []);
 
-  const attack = () => {
-    const attackDetails={
-      attack:{
-        type: "electric",
-        level: 3,
-      },
-      attackerDetails:{
-        pokemon:{
-          type: "fighting",
-          intensity: {
-            attack: 3,
-            defense: 2,
-          }
-        },
-        exp: 62,
-        strength: health1,
-      },
-      defenderDetails:{
-        pokemon:{
-          type: "fire",
-          intensity: {
-            attack: 2,
-            defense: 3,
-          }
-        },
-        exp: 57,
-        strength: health2,
-      }
-    }
-
-    socket.emit("attackForServer", attackDetails);
-  };
-
-  const decreaseHealth = (player=1, delta=20) => {
+  const decreaseHealth = (player, delta) => {
     delta = Math.min(player === 1 ? health1 : health2, delta);
     const p = document.getElementById(player === 1 ? "player1" : "player2");
     let id = null,
@@ -89,6 +53,7 @@ function Battle() {
         p.style.backgroundColor = "orange";
       }
       if (x === delta + 1) {
+        console.log("help")
         player === 1
           ? setHealth1((prev) => prev - delta)
           : setHealth2((prev) => prev - delta);
@@ -100,8 +65,18 @@ function Battle() {
     }, time);
   };
 
+  const attack = (move)=>{
+    socket.emit("attack",{
+      move,
+      player: socket.id,
+      room_id:room,
+    });
+    // console.log(move);
+  }
+
   return (
     <div>
+    <h3>Room: {room}</h3>
       <div
         style={{
           position: "absolute",
@@ -178,18 +153,30 @@ function Battle() {
         player1 &&   
         <div>
           <div>
-            <button className="attack" onClick={attack}>
+            <button className="attack" onClick={()=>{
+              const move= player1.pokemon.moves[0];
+              attack(move);
+            }}>
               {player1?.pokemon.moves[0].name}
             </button>
-            <button className="attack" onClick={attack}>
+            <button className="attack" onClick={()=>{
+              const move= player1.pokemon.moves[1];
+              attack(move);
+            }}>
               {player1?.pokemon.moves[1].name}
             </button>
           </div>
           <div>
-            <button className="attack" onClick={attack}>
+            <button className="attack" onClick={()=>{
+              const move= player1.pokemon.moves[2];
+              attack(move);
+            }}>
               {player1?.pokemon.moves[2].name}
             </button>
-            <button className="attack" onClick={attack}>
+            <button className="attack" onClick={()=>{
+              const move= player1.pokemon.moves[3];
+              attack(move);
+            }}>
               {player1?.pokemon.moves[3].name}
             </button>
           </div>

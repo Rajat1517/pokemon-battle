@@ -8,7 +8,7 @@ const handleConfigureEvents = (io, socket) => {
     const player = new Player(avatar, experience, pokemon,socket.id);
     players.set(socket.id, player);
     socket.emit("player added");
-    players.forEach(player=>console.log(player.pokemon));
+    players.forEach(player=>console.log(player));
   });
 
 };

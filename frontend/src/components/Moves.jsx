@@ -35,6 +35,7 @@ function Moves() {
       });
       
       setMoves(temp);
+      
       socket.emit("configure player",{
         avatar: character,
          experience,
