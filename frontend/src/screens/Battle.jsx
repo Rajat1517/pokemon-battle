@@ -2,26 +2,31 @@ import React, { useContext, useState, useEffect } from "react";
 import { UtilContext } from "../contexts/UtilContext";
 import socket from "../utilities/socketConnection";
 import { debouncefn } from "../utilities/utils";
+import Alert from "../components/Alert";
 
 function Battle() {
   const { pokemon, character, moves, room } = useContext(UtilContext);
   const [health1, setHealth1] = useState(100);
   const [health2, setHealth2] = useState(100);
   const [text, setText] = useState("Let the battle begin!");
-
+  const [active,setActive]= useState(false);
   const [player1, setPlayer1] = useState(null);
   const [player2, setPlayer2] = useState(null);
+  const [visible,setVisible]= useState(false);
+  const [message,setMessage]= useState("");
+
 
   useEffect(() => {
     socket.emit("joined battle", {
       room_id: room,
     });
 
-    socket.on("players in room", ({ players }) => {
+    socket.on("players in room", ({ players,active }) => {
       const p1 = players?.find((player) => player.id === socket.id);
       const p2 = players?.find((player) => player.id !== socket.id);
       setPlayer1(p1);
       setPlayer2(p2);
+      setActive(active===socket.id);
     });
 
     return () => {
@@ -30,9 +35,16 @@ function Battle() {
   }, []);
 
   useEffect(()=>{
-    socket.on("pokemon move", ({ player, delta, contestant }) => {
+    socket.on("pokemon move", ({ player, delta, active,victor }) => {
       const num= player === socket.id ? 1 : 2;
       decreaseHealth(num, delta);
+      setActive(active===socket.id);
+      console.log(victor);
+      if(victor!==undefined){
+        const m= victor===socket.id? "You won!!! One step closer to becoming the Pokemon Master." : "You lost!!! Let's practice more."
+        setMessage(m);
+        setVisible(true);
+      }
     });
 
     return ()=>{
@@ -100,6 +112,7 @@ function Battle() {
                   <div id="player1"></div>
                 </div>
                 <p>HP {health1}</p>
+                <p>Exp {player1.experience}</p>
               </div>
               <div>
                 <img
@@ -135,6 +148,7 @@ function Battle() {
                   <div id="player2"></div>
                 </div>
                 <p>HP {health2}</p>
+                <p>Exp {player2.experience}</p>
               </div>
               <div>
                 <img
@@ -162,6 +176,7 @@ function Battle() {
             <div>
               <button
                 className="attack"
+                disabled={!active}
                 onClick={() => {
                   const move = player1.pokemon.moves[0];
                   attack(move);
@@ -171,6 +186,7 @@ function Battle() {
               </button>
               <button
                 className="attack"
+                disabled={!active}
                 onClick={() => {
                   const move = player1.pokemon.moves[1];
                   attack(move);
@@ -182,6 +198,7 @@ function Battle() {
             <div>
               <button
                 className="attack"
+                disabled={!active}
                 onClick={() => {
                   const move = player1.pokemon.moves[2];
                   attack(move);
@@ -191,6 +208,7 @@ function Battle() {
               </button>
               <button
                 className="attack"
+                disabled={!active}
                 onClick={() => {
                   const move = player1.pokemon.moves[3];
                   attack(move);
@@ -203,6 +221,7 @@ function Battle() {
         )}
       </div>
       <div id="message-container">{text}</div>
+      <Alert message={message} visible={visible} setVisible={setVisible}/>
     </div>
   );
 }

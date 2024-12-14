@@ -35,6 +35,7 @@ const handleRoomEvents = (io, socket) => {
     }
     console.log(rooms);
   });
+  
 };
 
 module.exports = {

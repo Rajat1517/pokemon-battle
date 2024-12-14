@@ -97,7 +97,7 @@ const calcDefend = ({defender, exp, strength}, attack,attacker) => {
     }
 
 
-  const delta= Math.max(4, calcAttack(attackerData,attack,defenderData.defender.name) - calcDefend(defenderData,attack,attackerData.attacker.name));
+  let delta= Math.max(4, calcAttack(attackerData,attack,defenderData.defender.name) - calcDefend(defenderData,attack,attackerData.attacker.name));
   if(defenderDetails.health===0 || attackerDetails.health === 0) delta=0;
   players.get(defenderId).updateHealth(delta);
   return delta;
