@@ -58,7 +58,7 @@ const calcAttack = ({attacker, exp, strength}, attack, defender) => {
 
   let res = Math.ceil(
     ((exp/100) *
-      (strength) *
+      (strength/2) *
       intensity *
       Math.sqrt((attackLevel * c1) + c2))
   );
@@ -70,11 +70,11 @@ const calcDefend = ({defender, exp, strength}, attack,attacker) => {
   const defenderType = pokemons[defender.name].type;
   const attackType = attack.type;
   const intensity = pokemons[defender.name].intensity?.defense / 5;
-  const c1 = typeChart[indices.get(attackType)][indices.get(defenderType)];
-  const c2 = typeChart[indices.get(attackerType)][indices.get(defenderType)];
+  const c1 = typeChart[indices.get(defenderType)][indices.get(attackType)];
+  const c2 = typeChart[indices.get(defenderType)][indices.get(attackerType)];
 
   let res = ~~(
-    ((exp/100) * (strength) * intensity * Math.sqrt(c1 + c2 ))
+    ((exp/100) * (strength/2) * intensity * Math.sqrt(c1 + c2 ))
   );
   return res;
 };
@@ -97,8 +97,8 @@ const calcDefend = ({defender, exp, strength}, attack,attacker) => {
     }
 
 
-  const delta= Math.max(0, calcAttack(attackerData,attack,defenderData.defender.name) - calcDefend(defenderData,attack,attackerData.attacker.name));
-  
+  const delta= Math.max(4, calcAttack(attackerData,attack,defenderData.defender.name) - calcDefend(defenderData,attack,attackerData.attacker.name));
+  if(defenderDetails.health===0 || attackerDetails.health === 0) delta=0;
   players.get(defenderId).updateHealth(delta);
   return delta;
 };
