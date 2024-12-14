@@ -2,24 +2,9 @@ const battleBlow = require("../utils/battle");
 const { players } = require("../services/configureService");
 const { rooms } = require("../services/roomService");
 
-// let player = 1;
-
 const handleBattleEvents = (io, socket) => {
 
-  // socket.on("attackForServer", (attack) => {
-  //   let delta = battleBlow(attack);
-  //   player = player === 1 ? 2 : 1;
-  //   if (delta < 0) player = player === 1 ? 2 : 1;
-  //   if (delta == 0) delta = 10 + Math.ceil(Math.random() * 10);
-  //   socket.emit("attackForClient", {
-  //     player,
-  //     delta: Math.abs(delta),
-  //     message: " attacked ",
-  //   });
-  // });
-
-  // attack
-
+  // attack in battle
   socket.on("attack",({move})=>{
     const player= socket.id;
     const room_id= [...socket.rooms][1];
@@ -29,6 +14,7 @@ const handleBattleEvents = (io, socket) => {
     io.of("/").to(room_id).emit("pokemon move",{
       player: contestant,
       delta,
+      contestant: players.get(contestant),
     })
   })
 

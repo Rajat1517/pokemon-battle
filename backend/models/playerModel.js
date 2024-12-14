@@ -9,6 +9,7 @@ class Player {
 
   updateHealth(delta) {
     this.health = Math.max(this.health-delta,0);
+    console.log(this.health);
     return this.health;
   }
 }

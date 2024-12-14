@@ -48,7 +48,6 @@ indices.set("grass", 5);
 indices.set("fire", 6);
 
 const calcAttack = ({attacker, exp, strength}, attack, defender) => {
-  // console.log(attacker, exp, strength, attack, defender);
   const defenderType= pokemons[defender].type;
   const attackerType = pokemons[attacker.name].type;
   const attackType = attack.type;
@@ -67,7 +66,6 @@ const calcAttack = ({attacker, exp, strength}, attack, defender) => {
 };
 
 const calcDefend = ({defender, exp, strength}, attack,attacker) => {
-  // console.log(defender, exp, strength, attack,attacker);
   const attackerType= pokemons[attacker].type;
   const defenderType = pokemons[defender.name].type;
   const attackType = attack.type;
