@@ -9,24 +9,23 @@ function Battle() {
   const [health1, setHealth1] = useState(100);
   const [health2, setHealth2] = useState(100);
   const [text, setText] = useState("Let the battle begin!");
-  const [active,setActive]= useState(false);
+  const [active, setActive] = useState(false);
   const [player1, setPlayer1] = useState(null);
   const [player2, setPlayer2] = useState(null);
-  const [visible,setVisible]= useState(false);
-  const [message,setMessage]= useState("");
-
+  const [visible, setVisible] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     socket.emit("joined battle", {
       room_id: room,
     });
 
-    socket.on("players in room", ({ players,active }) => {
+    socket.on("players in room", ({ players, active }) => {
       const p1 = players?.find((player) => player.id === socket.id);
       const p2 = players?.find((player) => player.id !== socket.id);
       setPlayer1(p1);
       setPlayer2(p2);
-      setActive(active===socket.id);
+      setActive(active === socket.id);
     });
 
     return () => {
@@ -34,27 +33,30 @@ function Battle() {
     };
   }, []);
 
-  useEffect(()=>{
-    socket.on("pokemon move", ({ player, delta, active,victor }) => {
-      const num= player === socket.id ? 1 : 2;
+  useEffect(() => {
+    socket.on("pokemon move", ({ player, delta, active, victor }) => {
+      const num = player === socket.id ? 1 : 2;
       decreaseHealth(num, delta);
-      setActive(active===socket.id);
+      setActive(active === socket.id);
       console.log(victor);
-      if(victor!==undefined){
-        const m= victor===socket.id? "You won!!! One step closer to becoming the Pokemon Master." : "You lost!!! Let's practice more."
+      if (victor !== undefined) {
+        const m =
+          victor === socket.id
+            ? "You won!!! One step closer to becoming the Pokemon Master."
+            : "You lost!!! Let's practice more.";
         setMessage(m);
         setVisible(true);
       }
     });
 
-    return ()=>{
+    return () => {
       socket.off("pokemon move");
-    }
-  },[health1,health2])
+    };
+  }, [health1, health2]);
 
   const decreaseHealth = debouncefn((player, delta) => {
     delta = Math.min(player === 1 ? health1 : health2, delta);
-    if(delta===0) return;
+    if (delta === 0) return;
 
     const p = document.getElementById(player === 1 ? "player1" : "player2");
     let id = null,
@@ -70,17 +72,19 @@ function Battle() {
         p.style.backgroundColor = "orange";
       }
       if (x === delta + 1) {
-        player === 1 ? setHealth1((prev) =>{
-          return (prev - delta);
-        } ) : setHealth2((prev) => {
-          return (prev - delta);
-        } );
+        player === 1
+          ? setHealth1((prev) => {
+              return prev - delta;
+            })
+          : setHealth2((prev) => {
+              return prev - delta;
+            });
         clearInterval(id);
       }
       p.style.width = `${(player === 1 ? health1 : health2) - x}%`;
       x++;
     }, time);
-  },200)
+  }, 200);
 
   const attack = (move) => {
     socket.emit("attack", {
@@ -221,7 +225,7 @@ function Battle() {
         )}
       </div>
       <div id="message-container">{text}</div>
-      <Alert message={message} visible={visible} setVisible={setVisible}/>
+      <Alert message={message} visible={visible} setVisible={setVisible} />
     </div>
   );
 }
