@@ -6,9 +6,7 @@ import Moves from "../components/Moves";
 
 function Configure() {
   const [generatingExp, setGeneratingExp] = useState(false);
-  const { experience, setExperience, setPokemon, setCharacter, room } =
-    useContext(UtilContext);
-
+  const { experience, setExperience, setPokemon, setCharacter, room } = useContext(UtilContext);
 
   const generateExperience = () => {
     setGeneratingExp(true);

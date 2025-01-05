@@ -23,6 +23,12 @@ function Home() {
       },2000)
     })
 
+    socket.on("connection",({token})=>{
+      console.log("connected");
+      console.log(token);
+      localStorage.setItem("token",token);
+    })
+
     return ()=>{
 
     }
@@ -42,7 +48,9 @@ function Home() {
       <div className="room-form">
         <button className="button btn-create" onClick={()=>{
           console.log("clickedddd")
-          socket.emit("create room");
+          socket.emit("create room",{
+            player_id: localStorage.getItem("token"),
+          });
         }}>Create Room</button>
         <form
           onSubmit={(e) => {
@@ -51,7 +59,10 @@ function Home() {
             const formData= new FormData(form);
             const room_id= formData.get("room");
             console.log(room_id);
-            socket.emit("join room",room_id);
+            socket.emit("join room",{
+              room_id,
+              player_id: localStorage.getItem("token"),
+            });
           }}
           id="room-id-form"
         >

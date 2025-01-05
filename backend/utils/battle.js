@@ -82,8 +82,10 @@ const calcDefend = ({defender, exp, strength}, attack,attacker) => {
  const battleBlow = (player,move,room_id) => {
 
     const attackerDetails= players.get(player);
-    const defenderId= rooms.get(room_id)?.players.filter(p=>p!==player)[0];
-    const defenderDetails= players.get(defenderId);
+    console.log("attackerDetails",attackerDetails)
+    const defenderId= rooms.get(room_id)?.players.filter(p=>p.player!==player)[0];
+    console.log("defenderId",defenderId);
+    const defenderDetails= players.get(defenderId.player);
     const attack= move;
     const attackerData={
       attacker: attackerDetails.pokemon,
@@ -96,10 +98,12 @@ const calcDefend = ({defender, exp, strength}, attack,attacker) => {
       strength: defenderDetails.health,
     }
 
+    console.log("attackerData",attackerData)
+    console.log("defenderData",defenderData)
 
   let delta= Math.max(4, calcAttack(attackerData,attack,defenderData.defender.name) - calcDefend(defenderData,attack,attackerData.attacker.name));
   if(defenderDetails.health===0 || attackerDetails.health === 0) delta=0;
-  players.get(defenderId).updateHealth(delta);
+  players.get(defenderId.player).updateHealth(delta);
   return delta;
 };
 

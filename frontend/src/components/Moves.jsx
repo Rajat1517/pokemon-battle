@@ -42,8 +42,10 @@ function Moves() {
          pokemon: {
           name: pokemon,
           moves:temp,
-         }
+         },
+         token: localStorage.getItem("token")
       })
+
       navigate("/battle", { replace: true });
     }
   }

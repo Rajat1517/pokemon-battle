@@ -1,22 +1,22 @@
 
 class Room {
-  constructor(id, status,player) {
+  constructor(id, status,player,token) {
     this.id = id;
     this.status = status;
-    this.players= [player];
-    this.active= player;
+    this.players= [{player,token}];
+    this.active= token;
   }
 
   updateStatus(status) {
     this.status = status;
   }
 
-  addPlayer(player) {
-    this.players = [...this.players, player];
+  addPlayer(player,token) {
+    this.players = [...this.players, {player,token}];
   }
 
   toggleActive(){
-    this.active= this.active === this.players[0]? this.players[1]:this.players[0];
+    this.active= this.active === this.players[0].token? this.players[1].token:this.players[0].token;
     return this.active;
   }
 

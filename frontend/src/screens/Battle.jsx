@@ -15,17 +15,22 @@ function Battle() {
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
+  useEffect(() => { 
     socket.emit("joined battle", {
       room_id: room,
+      token: localStorage.getItem("token"),
     });
 
     socket.on("players in room", ({ players, active }) => {
-      const p1 = players?.find((player) => player.id === socket.id);
-      const p2 = players?.find((player) => player.id !== socket.id);
+      const token = localStorage.getItem("token");
+      console.log("token",token);
+      console.log(players);
+      const p1 = players?.find((player) => player.token === token);
+      const p2 = players?.find((player) => player.token !== token);
+      console.log("players",p1,p2);
       setPlayer1(p1);
       setPlayer2(p2);
-      setActive(active === socket.id);
+      setActive(active=== token);
     });
 
     return () => {
@@ -35,13 +40,14 @@ function Battle() {
 
   useEffect(() => {
     socket.on("pokemon move", ({ player, delta, active, victor }) => {
-      const num = player === socket.id ? 1 : 2;
+      const token = localStorage.getItem("token");
+      const num = player === token ? 1 : 2;
       decreaseHealth(num, delta);
-      setActive(active === socket.id);
+      setActive(active === token);
       console.log(victor);
       if (victor !== undefined) {
         const m =
-          victor === socket.id
+          victor === token
             ? "You won!!! One step closer to becoming the Pokemon Master."
             : "You lost!!! Let's practice more.";
         setMessage(m);
@@ -89,7 +95,7 @@ function Battle() {
   const attack = (move) => {
     socket.emit("attack", {
       move,
-      player: socket.id,
+      token: localStorage.getItem("token"),
       room_id: room,
     });
   };
@@ -231,3 +237,7 @@ function Battle() {
 }
 
 export default Battle;
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJfaWQiOiJjejhtNWpoNW1hciIsImlhdCI6MTczNjA3MzE5NCwiZXhwIjoxNzM2MDc2Nzk0fQ.JhrcX_qLu9ZkvqRM7BjqMOw33brFFqVs3JF1cZLoaWk
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJfaWQiOiJjejhtNWpoNW1hciIsImlhdCI6MTczNjA3MzE5NCwiZXhwIjoxNzM2MDc2Nzk0fQ.JhrcX_qLu9ZkvqRM7BjqMOw33brFFqVs3JF1cZLoaWk
