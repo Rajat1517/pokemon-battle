@@ -2,7 +2,8 @@ const { Server } = require("socket.io");
 const { handleBattleEvents } = require("../services/battleService");
 const { handleRoomEvents } = require("../services/roomService");
 const { handleConfigureEvents } = require("../services/configureService");
-const { generateJWT } = require("../utils/authentication");
+const { generateJWT, verifyJWT } = require("../utils/authentication");
+const { verify } = require("jsonwebtoken");
 
 const setupSocketServer = (server) => {
   const io = new Server(server, {
@@ -14,11 +15,27 @@ const setupSocketServer = (server) => {
 
   //   event handlers
   io.on("connection", (socket) => {
-    console.log("user connected", socket.id);
-    const token = generateJWT();
-    socket.emit("connection", {
-      token,
-    });
+
+    const token= socket.handshake.query.token;
+    if(token === undefined){
+      console.log("user connected", socket.id);
+      const token = generateJWT();
+      socket.emit("connection", {
+        token,
+      });
+    }
+    else{
+      const validity= verifyJWT(token);
+      if(!validity.success) return;
+      
+      // io.of("/")
+      // .to(room_id)
+      // .emit("players in room", {
+      //   players: contestants,
+      //   active: rooms.get(room_id).getActivePlayer(),
+      // });
+      console.log("user reconnected", validity);
+    }
 
     handleBattleEvents(io, socket);
     handleRoomEvents(io, socket);
