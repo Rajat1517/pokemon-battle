@@ -30,7 +30,7 @@ function Battle() {
       console.log("players",p1,p2);
       setPlayer1(p1);
       setPlayer2(p2);
-      setActive(active=== token);
+      setActive(active === token);
     });
 
     return () => {
@@ -237,7 +237,3 @@ function Battle() {
 }
 
 export default Battle;
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJfaWQiOiJjejhtNWpoNW1hciIsImlhdCI6MTczNjA3MzE5NCwiZXhwIjoxNzM2MDc2Nzk0fQ.JhrcX_qLu9ZkvqRM7BjqMOw33brFFqVs3JF1cZLoaWk
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJfaWQiOiJjejhtNWpoNW1hciIsImlhdCI6MTczNjA3MzE5NCwiZXhwIjoxNzM2MDc2Nzk0fQ.JhrcX_qLu9ZkvqRM7BjqMOw33brFFqVs3JF1cZLoaWk

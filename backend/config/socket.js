@@ -3,7 +3,6 @@ const { handleBattleEvents } = require("../services/battleService");
 const { handleRoomEvents } = require("../services/roomService");
 const { handleConfigureEvents } = require("../services/configureService");
 const { generateJWT, verifyJWT } = require("../utils/authentication");
-const { verify } = require("jsonwebtoken");
 
 const setupSocketServer = (server) => {
   const io = new Server(server, {
@@ -26,7 +25,13 @@ const setupSocketServer = (server) => {
     }
     else{
       const validity= verifyJWT(token);
-      if(!validity.success) return;
+      if(!validity.success){
+        console.log("user connected", socket.id);
+        const token = generateJWT();
+        socket.emit("connection", {
+          token,
+        });
+      } 
       
       // io.of("/")
       // .to(room_id)
